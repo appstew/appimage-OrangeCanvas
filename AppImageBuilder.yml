@@ -1,0 +1,78 @@
+# appimage-builder recipe see https://appimage-builder.readthedocs.io for details
+version: 1
+script:
+  # Remove any previous build
+
+  - xhost +
+  #- tar -xvzf 
+  - tar -xzf ./venv11.tar.gz
+  - rm -rf AppDir  | true
+  - rm -rf appimage-build
+  - rm -rf venv11/usr/bin/__pycache__
+  - cp -r venv11 AppDir
+AppDir:
+  path: ./AppDir
+  app_info:
+    id: orange-canvas
+    name: orange-canvas
+    icon: orange-canvas
+    version: 3.36.1
+    # Set the python executable as entry point
+    exec: usr/bin/python3
+    # Set the application main script path as argument. Use '$@' to forward CLI parameters
+    # exec_args: "-m Orange.canvas"
+    exec_args: "$APPDIR/usr/lib/python3.10/site-packages/Orange/canvas/__main__.py"
+  apt:
+    arch: amd64
+    allow_unauthenticated: true
+    sources:
+      - sourceline: deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy main restricted universe multiverse
+      - sourceline: deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ jammy-updates main restricted universe multiverse
+    include:
+    - libgl1
+    - libxcb1
+    - python3-pyqt5
+    - libglvnd0
+    - libglx0
+    #- qtwayland5
+    #- python3
+    #- libcanberra-gtk-module
+    #- packagekit-gtk3-module
+    #- gstreamer1.0-tools
+    #- libgstreamer1.0-0
+    exclude: []
+
+#  runtime:
+#    env:
+#      PYTHONPATH: '${APPDIR}/usr/lib/python3.10/site-packages'
+    
+  test:
+
+    fedora-30:
+      image: appimagecrafters/tests-env:fedora-30
+      #command: env XDG_RUNTIME_DIR=/run/user/1000 bash -c './AppRun'
+      command: ./AppRun
+      #use_host_x: True
+      #env:
+        #QT_DEBUG_PLUGINS: 1 
+        # LD_DEBUG: libs
+    debian-stable:
+      image: appimagecrafters/tests-env:debian-stable
+      command: ./AppRun
+      use_host_x: true
+    archlinux-latest:
+      image: appimagecrafters/tests-env:archlinux-latest
+      command: ./AppRun
+      use_host_x: true
+    centos-7:
+      image: appimagecrafters/tests-env:centos-7
+      command: ./AppRun
+    ubuntu-xenial:
+      image: appimagecrafters/tests-env:ubuntu-xenial
+      command: ./AppRun
+      use_host_x: true
+    
+AppImage:
+  arch: x86_64
+  update-information: None
+  sign-key: None

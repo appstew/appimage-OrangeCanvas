@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Exec=/home/appstew/.local/bin/orange-canvas %F
+Name=orange-canvas
+GenericName=orange-canvas
+Icon=orange-canvas
+StartupWMClass=orange-canvas
+Terminal=false
+Categories=Development;IDE;
